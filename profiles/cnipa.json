@@ -1,0 +1,28 @@
+{
+  "schema": "patent-figure-office/1",
+  "office": "cnipa",
+  "name": "国家知识产权局（CNIPA）发明 / 实用新型说明书附图",
+  "_sources": [
+    {"rule": "paper / margins / drawing area", "cite": "《专利审查指南》（2023）第一部分第一章 4.3；第五部分第一章 5.2（A4、页边 上25/左25/下15/右15 mm）", "url": "https://www.cnipa.gov.cn/attach/0/专利审查指南.pdf"},
+    {"rule": "caption 「图N」 centred below the figure; Chinese text only; no notes", "cite": "《专利法实施细则》（2023 修订）第二十一条；指南 一部一章 4.3；一部二章 7.3", "url": "https://www.cnipa.gov.cn/art/2023/12/21/art_98_189197.html"},
+    {"rule": "min text height 3.5 mm (legible at 2/3 reduction)", "cite": "GB/T 14691—1993 字高系列；指南 五部一章 5.2", "url": "https://std.samr.gov.cn/"},
+    {"rule": "full extract with line references", "cite": "references/patent-figure-spec.md（2026-09-03 第二遍核验）"}
+  ],
+  "_verified": "2026-09-03",
+  "_note": "精确图片参数以当期《电子申请文件格式要求说明》为准。本文件的数值与 scripts/patent_figure/layout.py、deliverable.py 的冻结常数逐项一致（tests/test_office.py 守着）；改这里不改金样。",
+  "paper": {"name": "A4", "size_mm": [210.0, 297.0]},
+  "margins_mm": {"top": 25.0, "left": 25.0, "bottom": 15.0, "right": 15.0},
+  "area_presets": {
+    "standard": {"area_mm": [170.0, 257.0], "label": "标准版心 170×257 mm"},
+    "conservative": {"area_mm": [165.0, 245.0], "label": "保守版心 165×245 mm"}
+  },
+  "default_preset": "standard",
+  "caption": {"format": "图{n}", "position": "below-centre", "language": "zh",
+              "description_line": "图{n}为{caption}；"},
+  "description_block": {"header": "【附图说明】", "separator": "；", "tail": "。"},
+  "sheet_number": {"enabled": false, "format": "{n}/{total}", "position": "top-centre"},
+  "min_text_mm": 3.5,
+  "text_language": "zh",
+  "targets": {"enabled": false, "size_mm": 6.0, "corners": ["top-left", "bottom-right"]},
+  "not_in_this_profile": ["shading", "color", "photographs"]
+}

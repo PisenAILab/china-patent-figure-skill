@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>{name} · 工程列表</title>
+<meta name="description" content="从 STEP 到按国家知识产权局形式要求排版的说明书附图。">
+<link rel="stylesheet" href="/static/tokens.css">
+<link rel="stylesheet" href="/static/home.css">
+</head>
+<body class="home">
+  <header id="hbar">
+    <div class="brand-mark">
+      <span class="brand-glyph" aria-hidden="true" data-brand-slot="glyph">E</span>
+      <span class="brand-text">
+        <b class="brand-name" data-brand-slot="display-name">中国专利附图 Skill</b>
+        <span class="brand-by"><span data-brand-slot="brand"></span> 开源项目 · <span data-brand-slot="repo">china-patent-figure-skill</span></span>
+      </span>
+    </div>
+    <div class="hbar-tools">
+      <button class="cmd-trigger" id="cmd-open" title="搜索与命令（/）">
+        <span class="mono">⌕</span> 搜索工程 <kbd>/</kbd></button>
+      <span id="ai-badge" class="ai-badge" title="AI 通道状态">AI</span>
+      <button class="icon-btn" id="theme-toggle" title="切换深浅外壳（图纸恒白）" aria-label="切换主题">◐</button>
+      <button class="btn ghost" data-open="integrate">接入 MCP / API</button>
+      <button class="btn ghost" data-open="settings">设置</button>
+    </div>
+  </header>
+
+  <main id="home">
+    <!-- 首跑引导条：装完第一件事做什么（WP0 §A6） -->
+    <section class="onboard" id="onboard">
+      <ol class="pipeline">
+        <li><span class="seal">01</span><b>载入 / 上传</b><span>示例或 Creo / SolidWorks 导出的 STEP</span></li>
+        <li><span class="seal">02</span><b>看懂 · 框选</b><span>结构树 ↔ 3D 联动，按机构框选入图</span></li>
+        <li><span class="seal">03</span><b>出图 · 过闸</b><span>程序发标号与版面，13 项 QA 把关</span></li>
+        <li><span class="seal">04</span><b>导出附图包</b><span>递交版 PDF + 交底版 Word</span></li>
+      </ol>
+      <a class="no-step" id="no-step">我没有 STEP 怎么办？</a>
+    </section>
+
+    <section class="projects">
+      <div class="sec-head">
+        <h1>工程</h1>
+        <span class="hint mono" id="data-dir"></span>
+      </div>
+      <div class="grid" id="grid"></div>
+    </section>
+  </main>
+
+  <!-- ② 新建与上传：全屏覆盖，承载拖放与分阶段时间线 -->
+  <div class="upload-scrim" id="upload" hidden>
+    <div class="upload-panel" role="dialog" aria-label="新建工程">
+      <button class="icon-btn upload-close" id="upload-close" aria-label="关闭">✕</button>
+      <div class="upload-body" id="upload-body"></div>
+    </div>
+  </div>
+
+  <!-- 「我没有 STEP」出口 -->
+  <dialog id="dlg-nostep" class="dlg">
+    <div class="dlg-body">
+      <h2 class="dlg-title"><span class="seal">?</span>我没有 STEP 怎么办</h2>
+      <p class="muted"><span data-brand-slot="display-name">中国专利附图 Skill</span> 只收 STEP 装配体（.stp / .step）。主流 CAD 一句话导出：</p>
+      <ul class="howto">
+        <li><b>SolidWorks</b><span>文件 → 另存为 → 类型选 STEP AP214（.step）</span></li>
+        <li><b>Creo</b><span>文件 → 另存副本 → 类型 STEP → 实体 + 面</span></li>
+        <li><b>UG / NX</b><span>文件 → 导出 → STEP214</span></li>
+        <li><b>Inventor</b><span>导出 → CAD 格式 → STEP（AP214）</span></li>
+        <li><b>Fusion 360</b><span>文件 → 导出 → STEP（.step）</span></li>
+      </ul>
+      <p class="muted">只有 2D 图纸或照片？本版不收——它把 3D 装配体变成规范附图，不做描边。</p>
+      <div class="dlg-actions">
+        <button class="btn" id="nostep-example">先用示例跑一遍</button>
+        <button class="btn primary" onclick="this.closest('dialog').close()">我去导出 STEP</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- 设置 · AI 通道 -->
+  <dialog id="dlg-settings" class="dlg">
+    <form method="dialog" class="dlg-body" id="form-settings">
+      <h2 class="dlg-title"><span class="seal">设</span>AI 通道</h2>
+      <p class="muted">AI 只做两件事：给零件起中文名、把方法描述整理成流程图语义。
+        编号与版面一律由程序完成。</p>
+      <fieldset class="radio">
+        <label><input type="radio" name="provider" value="auto" checked> 自动（有密钥用 API，否则用本机 CodeBuddy）</label>
+        <label><input type="radio" name="provider" value="deepseek"> DeepSeek API</label>
+        <label><input type="radio" name="provider" value="codebuddy"> 本机 CodeBuddy（无需密钥）</label>
+      </fieldset>
+      <label class="field">DeepSeek API 密钥
+        <input type="password" name="api_key" autocomplete="off" placeholder="sk-…（留空则不修改）"></label>
+      <p class="muted" id="key-state"></p>
+      <div class="dlg-actions">
+        <button type="button" class="btn" data-test>测试连接</button>
+        <span class="hint" id="test-result"></span>
+        <button value="close" class="btn">关闭</button>
+        <button type="button" class="btn primary" data-save>保存</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- 接入 MCP / API -->
+  <dialog id="dlg-integrate" class="dlg wide">
+    <form method="dialog" class="dlg-body">
+      <h2 class="dlg-title"><span class="seal">接</span>接入 MCP / API</h2>
+      <div class="int-grid">
+        <div>
+          <h3>MCP 客户端</h3>
+          <p class="muted">在 <b data-brand-slot="mcp-clients">MCP 客户端（如 Claude Code、Codex）</b>
+            里新增一个自定义连接器，地址填下面这行。</p>
+          <div class="copy-row"><input readonly id="mcp-url" class="mono" value="http://127.0.0.1:8803/mcp"><button type="button" class="btn" data-copy="mcp-url">复制</button></div>
+          <p class="muted">可用工具：列出工程、读零件清单、写零件中文名、出图（交底版 / 递交版 + 附图说明）、
+            按 JSON 或一段文字画流程图。客户端当「起名的人」，编号仍由程序发。</p>
+          <p class="muted warn">⚠ 这个地址只在本机可达。要从云端连入需另行部署或内网穿透，属对外暴露服务，请先评估。</p>
+        </div>
+        <div>
+          <h3>REST API</h3>
+          <p class="muted">所有接口带请求头 <span class="mono">Authorization: Bearer &lt;token&gt;</span>。</p>
+          <textarea readonly class="mono" rows="7"># 列出工程
+curl -H "Authorization: Bearer $TOKEN" http://127.0.0.1:8803/v1/projects
+
+# 提交渲染作业（异步，返回 job_id）
+curl -X POST -H "Authorization: Bearer $TOKEN" \
+  http://127.0.0.1:8803/v1/projects/&lt;id&gt;/render</textarea>
+          <p class="muted">token 等同本机工作台的钥匙：别贴到公开的地方。</p>
+        </div>
+      </div>
+      <div class="dlg-actions"><button value="close" class="btn">关闭</button></div>
+    </form>
+  </dialog>
+
+  <!-- 命令 / 搜索面板（F5-lite：轻量，不是全套 ⌘K） -->
+  <div class="cmdk-scrim" id="cmdk" hidden>
+    <div class="cmdk-panel" role="dialog" aria-label="搜索与命令">
+      <input id="cmdk-input" class="cmdk-input" placeholder="搜索工程，或输入命令…" autocomplete="off">
+      <ul class="cmdk-list" id="cmdk-list"></ul>
+      <div class="cmdk-foot"><kbd>↑</kbd><kbd>↓</kbd> 选择 · <kbd>↵</kbd> 打开 · <kbd>Esc</kbd> 关闭</div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <script type="module" src="/static/js/home.js"></script>
+</body>
+</html>

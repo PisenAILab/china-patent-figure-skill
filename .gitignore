@@ -1,0 +1,34 @@
+# Plan Studio / Workbench 运行时工作目录（用户数据：STEP 解析、GLB、plan、渲染产物）
+*.plan-studio/
+__pycache__/
+*.pyc
+.pytest_cache/
+.DS_Store
+.cache/
+out/
+assembly.json
+examples/planetary-gearbox/*.stp
+examples/planetary-gearbox/out/
+
+# WP3 mock 依赖的合成装配体（仅演示，需随仓库分发，供干净检出启动 mock）
+!webui/dev/fixtures/**/assembly.json
+
+# WP3 静态发布产物（由 build_static.py 生成，不入库）
+webui/dev/static-site/
+
+# WP4 静态演示站产物（scripts/build_static_site.py 生成，不入库）
+static-site/
+# 打包产物
+dist/
+build/
+*.egg-info/
+# 部署密钥（docker compose 的 .env）
+.env
+
+# 打包产物（python -m build）
+dist/
+*.egg-info/
+
+# 开发期截图输出（capture_live.py），不进仓库
+docs/assets/screens/
+webui/dev/screens/

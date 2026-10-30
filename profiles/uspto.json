@@ -1,0 +1,31 @@
+{
+  "schema": "patent-figure-office/1",
+  "office": "uspto",
+  "name": "USPTO utility / design drawings (37 CFR 1.84) — minimal profile",
+  "_sources": [
+    {"rule": "paper: A4 (21.0 × 29.7 cm) or Letter (21.6 × 27.9 cm); all sheets the same size", "cite": "37 CFR 1.84(f)", "url": "https://www.ecfr.gov/current/title-37/section-1.84#p-1.84(f)"},
+    {"rule": "margins: top ≥ 2.5 cm, left ≥ 2.5 cm, right ≥ 1.5 cm, bottom ≥ 1.0 cm; sight ≤ 17.0 × 26.2 cm on A4; no frame around the sight; scan target points (cross-hairs) on two catercorner margin corners", "cite": "37 CFR 1.84(g)", "url": "https://www.ecfr.gov/current/title-37/section-1.84#p-1.84(g)"},
+    {"rule": "numbers, letters and reference characters ≥ 0.32 cm (1/8 in) high; not in brackets / circles; English alphabet", "cite": "37 CFR 1.84(p)(2)–(3)", "url": "https://www.ecfr.gov/current/title-37/section-1.84#p-1.84(p)"},
+    {"rule": "sheet numbering: consecutive Arabic numerals, sheet number / total sheets separated by an oblique line, middle of the top of the sheet but not in the margin, larger than reference characters", "cite": "37 CFR 1.84(t)", "url": "https://www.ecfr.gov/current/title-37/section-1.84#p-1.84(t)"},
+    {"rule": "view numbering: consecutive Arabic numerals preceded by the abbreviation FIG.; view numbers larger than reference characters", "cite": "37 CFR 1.84(u)", "url": "https://www.ecfr.gov/current/title-37/section-1.84#p-1.84(u)"},
+    {"rule": "legends: as few words as possible; English", "cite": "37 CFR 1.84(o); 37 CFR 1.52(b)(1)(ii)", "url": "https://www.ecfr.gov/current/title-37/section-1.84#p-1.84(o)"}
+  ],
+  "_verified": "2026-10-19",
+  "_verification_note": "2026-10-19：条文按 eCFR 当前版本整理；当日本机无法连通 ecfr.gov（SSL 握手失败），上线前须按上面链接逐条复核并更新本字段（见 docs/release-v0.2.0-checklist.md）。",
+  "_note": "Minimal profile: paper / margins / sight, FIG. N captions, n/total sheet numbers, 0.32 cm text floor, English-only text on the filing copy, cross-hair targets. NOT covered: shading (1.84(m)), colour and photographs (1.84(a)(2), (b)), Letter paper (profile is A4; Letter later), solid-line character rules beyond CONTINUOUS. Acceptance by the office is final; not legal advice.",
+  "paper": {"name": "A4", "size_mm": [210.0, 297.0]},
+  "margins_mm": {"top": 25.0, "left": 25.0, "bottom": 10.0, "right": 15.0},
+  "area_presets": {
+    "standard": {"area_mm": [170.0, 262.0], "label": "A4 sight 17.0 × 26.2 cm (1.84(g))"},
+    "conservative": {"area_mm": [165.0, 250.0], "label": "conservative 16.5 × 25.0 cm"}
+  },
+  "default_preset": "standard",
+  "caption": {"format": "FIG. {n}", "position": "below-centre", "language": "en",
+              "description_line": "FIG. {n} is {caption};"},
+  "description_block": {"header": "BRIEF DESCRIPTION OF THE DRAWINGS", "separator": ";", "tail": "."},
+  "sheet_number": {"enabled": true, "format": "{n}/{total}", "position": "top-centre"},
+  "min_text_mm": 3.2,
+  "text_language": "en",
+  "targets": {"enabled": true, "size_mm": 6.0, "corners": ["top-left", "bottom-right"]},
+  "not_in_this_profile": ["shading", "color", "photographs", "letter-paper"]
+}
